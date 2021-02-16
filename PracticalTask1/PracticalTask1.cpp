@@ -1,49 +1,45 @@
 ﻿#include <iostream>
 using namespace std;
-void CalculateBigInt(int num) 
+void CalculateBig(char *num, int bytes) 
 {
-    char bytes[4];
-    for (int i = 0; i < 4; i++)
-    {
-        num >>= 8 * i;
-        bytes[i] = num & 15;
-    }
     cout << "Big-Endian:";
-    for (int k = 3; k >= 0; k--)
+    for (int i = bytes - 1; i >= 0; i--)
     {
-        for (int i = 0; i < 8; i++)
+        for (int k = 0; k < 8; k++)                          
         {
-            cout << ((bytes[k] & 128) >> 7);
-            bytes[k] <<= 1;
+            cout << ((*(num + i) >> (7 - k)) & 1);
         }
     }
+    cout << endl;
 }
-void CalculateLittleInt(int num)
+void CalculateLittle(char *num, int bytes)
 {
-    char bytes[4];
-    for (int i = 0; i < 4; i++)
-    {
-        num >>= 8 * i;
-        bytes[i] = num & 15;
-    }
     cout << "Little-Endian:";
-    for (int k = 0; k < 4; k++)
+    for (int i = 0; i < bytes; i++)
     {
-        for (int i = 0; i < 8; i++)
+        for (int k = 0; k < 8; k++)                          
         {
-            cout << ((bytes[k] & 128) >> 7);
-            bytes[k] <<= 1;
+            cout << ((*(num + i) >> (7 - k)) & 1);
         }
     }
+    cout << endl;
 }
 int main()
 {
     cout << "Input your number: ";
     double num;
     cin >> num;
-    cout << endl;
+    int numInt = (int)num;
+    int numInt2 = (int)num;
+    float numFloat = (float)num;
+    float numFloat2 = (float)num;
     cout << "int:" << endl;
-    CalculateBigInt((int)num);
-    cout << endl;
-    CalculateLittleInt((int)num);
+    CalculateBig((char*)&numInt, 4);
+    CalculateLittle((char*)&numInt2, 4);
+    cout << "float:" << endl;
+    CalculateBig((char*)&numFloat, 4);
+    CalculateLittle((char*)&numFloat2, 4);
+    cout << "double:" << endl;
+    CalculateBig((char*)&num, 8);
+    CalculateLittle((char*)&num, 8);
 }
